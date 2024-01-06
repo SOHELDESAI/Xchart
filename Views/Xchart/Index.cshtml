@@ -1,0 +1,80 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model Xchart.Models.XChartModel // Update with your actual namespace
+
+<h2>XChart</h2>
+
+<div id="myXChart"></div>
+
+<!-- Include xCharts library -->
+<script src="path-to-xCharts/xcharts.min.js"></script>
+
+<script>
+    var xChartModel = @Html.Raw(Json.Serialize(Model));
+
+    function fetchXChartData() {
+        $.get('/XChart/RefreshData', function (data) {
+            console.log('XChart Data received:', data);
+            xChartModel = data;
+            updateXChart();
+        });
+    }
+
+    function updateXChart() {
+        // Logic to update xChart based on the new data
+        // Refer to xCharts documentation for configuration: https://github.com/tenXer/xCharts
+
+        // For example, if you have a div with id "myXChart", you can use the following:
+        var chartData = {
+            "xScale": "ordinal",
+            "yScale": "linear",
+            "type": "bar",
+            "main": [
+                {
+                    className: ".stats",
+                    data: xChartModel.data.map(function (value, index) {
+                        return { x: index, y: value };
+                    })
+                }
+            ]
+        };
+
+        // Replace "myXChart" with the actual id of your xChart container
+        var chart = new xChart("bar", chartData, "#myXChart");
+    }
+
+    // Initial setup of xChart
+    $(window).load(function () 
+    {
+        // Logic to initialize xChart based on the initial data
+        // Refer to xCharts documentation for configuration: https://github.com/tenXer/xCharts
+
+        // For example, if you have a div with id "myXChart", you can use the following:
+        var chartData = 
+        {
+            "xScale": "ordinal",
+            "yScale": "linear",
+            "type": "bar",
+            "main": [
+                {
+                    className: ".stats",
+                    data: xChartModel.data.map(function (value, index) 
+                    {
+                        return { x: index, y: value };
+                    })
+                }
+            ]
+        };
+
+        // Replace "myXChart" with the actual id of your xChart container
+        var chart = new xChart("bar", chartData, "#myXChart");
+    });
+
+    // Periodically fetch new xChart data based on the configured time interval
+    setInterval(function () { fetchXChartData(); }, 60 * 1000);
+</script>
+
